@@ -166,8 +166,39 @@ app.post('/save-data', async (req, res) => {
   }
 });
 
+// Novo endpoint para listar todos os usuários
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.findAll();  // Encontra todos os usuários no banco de dados
+    return res.json(users);  // Retorna os usuários em formato JSON
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erro ao listar os usuários' });
+  }
+});
 
-// Inicia o servidor
-app.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}`);
+// Novo endpoint de status
+app.get('/status', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.json({ status: 'OK', message: 'API is running properly', version: '0.0.1' });
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+    res.status(500).json({ status: 'ERROR', message: 'API is not running properly', error: error.message });
+  }
+});
+
+app.listen(3000, async () => {
+  console.log('Servidor iniciado na porta 3000');
+
+  try {
+    // Sincronize o banco de dados
+    await sequelize.sync();
+
+    // Listar todos os usuários no banco de dados
+    const users = await User.findAll();
+    console.log('Usuários no banco de dados na inicialização do servidor:', users);
+  } catch (error) {
+    console.error('Erro ao inicializar o servidor e listar usuários:', error);
+  }
 });
