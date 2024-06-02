@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 const apiUrl = 'http://74.48.61.25:1337/send/text';
 const headers = {
   'Content-Type': 'application/json',
-  'Token': '56d6c029-60de-4dc9-bc6e-e18c91f300',
+  'token': '56d6c029-60de-4dc9-bc6e-e18c91f30052',
 };
 
 // Função para formatar o número de telefone
@@ -91,8 +91,8 @@ app.get('/remove-phone', async (req, res) => {
     }
 
     // Atualiza isActive para false e isDuplicate para true
-    user.isActive = false;
-    user.isDuplicate = false;
+    user.isActive = 0;
+    user.isDuplicate = 1;
     await user.save();
 
     // Enviar os dados do usuário para a API externa
@@ -113,7 +113,7 @@ app.get('/remove-phone', async (req, res) => {
 
 
 
-let duplicatedPhoneNumbers = []
+
 // Novo endpoint para adicionar um telefone duplicado
 app.get('/add-duplicate-phone', async (req, res) => {
   const { phoneNumber } = req.query;
@@ -130,8 +130,8 @@ app.get('/add-duplicate-phone', async (req, res) => {
     }
 
     // Atualiza isActive para false e isDuplicate para true
-    user.isActive = false;
-    user.isDuplicate = true;
+    user.isActive = 0;
+    user.isDuplicate = 1;
     await user.save();
     // Enviar os dados do usuário para a API externa
     const userData = {    
