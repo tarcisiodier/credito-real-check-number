@@ -6,6 +6,8 @@ const { v4: uuidv4 } = require('uuid');
 const User = require('./models');  // Importa o modelo definido
 const app = express();
 const port = 3000;
+const { DataTypes } = require('sequelize');
+const sequelize = require('./database');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -176,6 +178,18 @@ app.get('/users', async (req, res) => {
     return res.status(500).json({ error: 'Erro ao listar os usuários' });
   }
 });
+
+// Novo endpoint para listar usuários duplicados
+app.get('/users/duplicates', async (req, res) => {
+  try {
+    const duplicateUsers = await User.findAll({ where: { isDuplicate: true } });  // Encontra todos os usuários duplicados no banco de dados
+    return res.json(duplicateUsers);  // Retorna os usuários duplicados em formato JSON
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erro ao listar os usuários duplicados' });
+  }
+});
+
 
 // Novo endpoint de status
 app.get('/status', async (req, res) => {
