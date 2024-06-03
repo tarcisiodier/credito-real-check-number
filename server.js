@@ -198,7 +198,7 @@ app.get('/users/duplicates', async (req, res) => {
 app.get('/status', async (req, res) => {
   try {
     await sequelize.authenticate();
-    res.json({ status: 'OK', message: 'API is running properly', version: '0.0.1' });
+    res.json({ status: 'OK', message: 'API is running properly', version: '0.0.2' });
   } catch (error) {
     console.error('Unable to connect to the database:', error);
     res.status(500).json({ status: 'ERROR', message: 'API is not running properly', error: error.message });
