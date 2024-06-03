@@ -3,10 +3,9 @@ const axios = require('axios');  // Importe axios
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
-const User = require('./models');  // Importa o modelo definido
 const app = express();
 const port = 3000;
-const { DataTypes } = require('sequelize');
+const User = require('./models'); // Ajuste o caminho conforme necessário
 const sequelize = require('./database');
 
 app.use(cors());

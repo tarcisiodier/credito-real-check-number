@@ -2,9 +2,14 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
 
 const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
   name: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   phone: {
     type: DataTypes.STRING,
@@ -35,12 +40,8 @@ const User = sequelize.define('User', {
     defaultValue: false
   }
 }, {
-  timestamps: false
+  timestamps: true
 });
 
-// Sincroniza o modelo com o banco de dados
-(async () => {
-  await sequelize.sync({ alter: true }); // Sincroniza as mudanças no esquema
-})();
 
 module.exports = User;
