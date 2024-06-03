@@ -13,7 +13,8 @@ const User = sequelize.define('User', {
   },
   phone: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true // Adiciona a restrição de unicidade
   },
   email: {
     type: DataTypes.STRING,
@@ -42,6 +43,5 @@ const User = sequelize.define('User', {
 }, {
   timestamps: true
 });
-
 
 module.exports = User;

@@ -92,8 +92,8 @@ app.get('/remove-phone', async (req, res) => {
     }
 
     // Atualiza isActive para false e isDuplicate para true
-    user.isActive = 0;
-    user.isDuplicate = 0;
+    user.isActive = false;
+    user.isDuplicate = false;
     await user.save();
 
     // Enviar os dados do usuário para a API externa
@@ -124,27 +124,27 @@ app.get('/add-duplicate-phone', async (req, res) => {
   }
 
   try {
-    const users = await User.findAll({ where: { phone: phoneNumber } });
+    const user = await User.findOne({ where: { phone: phoneNumber } });
 
-    if (users.length === 0) {
+    if (user.length === 0) {
       return res.status(404).json({ error: 'Número de telefone não encontrado no banco de dados' });
     }
 
     // Atualiza isActive para false e isDuplicate para true para todos os registros encontrados
-    for (let user of users) {
-      user.isActive = 0;
-      user.isDuplicate = 1;
-      await user.save();
+    
+    user.isActive = false;
+    user.isDuplicate = true;
+    await user.save();
 
-      // Enviar os dados do usuário para a API externa
-      const userData = {
-        "Phone": "555180405853",
-        "Body": `*>>> LEAD DUPLICADO! <<<*\n*Nome :* ${user.name}\n*Telefone :* ${user.phone}\n*Turno :* ${user.turno}\n*Email :* ${user.email}\n*Imóvel Cod. :* ${user.property}\n*Data :* ${user.dataCad}\n*Agência :* Moinhos`,
-        "Id": uuidv4()
-      };
+    // Enviar os dados do usuário para a API externa
+    const userData = {
+      "Phone": "555180405853",
+      "Body": `*>>> LEAD DUPLICADO! <<<*\n*Nome :* ${user.name}\n*Telefone :* ${user.phone}\n*Turno :* ${user.turno}\n*Email :* ${user.email}\n*Imóvel Cod. :* ${user.property}\n*Data :* ${user.dataCad}\n*Agência :* Moinhos`,
+      "Id": uuidv4()
+    };
 
-      await axios.post(apiUrl, userData, { headers });
-    }
+    await axios.post(apiUrl, userData, { headers });
+   
 
     return res.json({ message: `Todos os registros com o telefone ${phoneNumber} foram atualizados como duplicados e isActive ajustado para false.` });
   } catch (error) {
@@ -160,9 +160,25 @@ app.post('/save-data', async (req, res) => {
   if (!name || !phone) {
     return res.status(400).json({ error: 'Nome e telefone são obrigatórios!' });
   }
-
+  
   try {
     const formattedPhone = formatPhoneNumber(phone);
+    
+    // Verificar se o telefone já está cadastrado
+    const existingUser = await User.findOne({ where: { phone: formattedPhone } });
+    
+    if (existingUser) {
+      // Enviar os dados do usuário para a API externa
+      const userData = {
+        "Phone": "555180405853",
+        "Body": `*>>> LEAD DUPLICADO! <<<*\n*Nome :* ${existingUser.name}\n*Telefone :* ${existingUser.phone}\n*Turno :* ${existingUser.turno}\n*Email :* ${existingUser.email}\n*Imóvel Cod. :* ${existingUser.property}\n*Data :* ${existingUser.dataCad}\n*Agência :* Moinhos`,
+        "Id": uuidv4()
+      };
+
+      await axios.post(apiUrl, userData, { headers });
+      return res.status(400).json({ error: 'O telefone já está cadastrado!' });
+    }
+
     const newUser = await User.create({ name, phone: formattedPhone, email, property, dataCad, turno });
     res.json({ message: 'Dados salvos com sucesso', user: newUser });
   } catch (error) {
@@ -170,6 +186,7 @@ app.post('/save-data', async (req, res) => {
     res.status(500).json({ error: 'Erro ao salvar os dados' });
   }
 });
+
 
 // Novo endpoint para listar todos os usuários
 app.get('/users', async (req, res) => {
