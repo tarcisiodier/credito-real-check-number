@@ -99,7 +99,7 @@ app.get('/remove-phone', async (req, res) => {
     // Enviar os dados do usuário para a API externa
     const userData = {    
         "Phone": "555180405853",
-        "Body": `*>>> NOVO-LEAD <<<*\n*Nome :* ${user.name}\n*Telefone :* ${user.phone}\n*Turno :* ${user.turno}\n*Email :* ${user.email}\n*Imóvel Cod. :* ${user.property}\n*Data :* ${user.dataCad}\n*Agência :* Moinhos`,
+        "Body": `*>>> NOVO-LEAD <<<*\n*Nome :* ${user.name}\n*Telefone :* ${user.phone}\n*Turno :* ${user.turno}\n*Email :* ${user.email}\n*Imóvel Cod. :* ${user.property}\n*Data :* ${user.dataCad}\n*Agência :* Moinhos\n*Att :* Marketing`,
         "Id": uuidv4()
      }
 
@@ -139,7 +139,7 @@ app.get('/add-duplicate-phone', async (req, res) => {
     // Enviar os dados do usuário para a API externa
     const userData = {
       "Phone": "555180405853",
-      "Body": `*>>> LEAD DUPLICADO! <<<*\n*Nome :* ${user.name}\n*Telefone :* ${user.phone}\n*Turno :* ${user.turno}\n*Email :* ${user.email}\n*Imóvel Cod. :* ${user.property}\n*Data :* ${user.dataCad}\n*Agência :* Moinhos`,
+      "Body": `*>>> LEAD DUPLICADO! <<<*\n*Nome :* ${user.name}\n*Telefone :* ${user.phone}\n*Turno :* ${user.turno}\n*Email :* ${user.email}\n*Imóvel Cod. :* ${user.property}\n*Data :* ${user.dataCad}\n*Agência :* Moinhos\n*Att :* Marketing`,
       "Id": uuidv4()
     };
 
@@ -175,7 +175,7 @@ app.post('/save-data', async (req, res) => {
 
       const userData = {
         "Phone": "555180405853",
-        "Body": `*>>> LEAD DUPLICADO! <<<*\n*Nome :* ${existingUser.name}\n*Telefone :* ${existingUser.phone}\n*Turno :* ${existingUser.turno}\n*Email :* ${existingUser.email}\n*Imóvel Cod. :* ${existingUser.property}\n*Data :* ${existingUser.dataCad}\n*Agência :* Moinhos`,
+        "Body": `*>>> LEAD DUPLICADO! <<<*\n*Nome :* ${existingUser.name}\n*Telefone :* ${existingUser.phone}\n*Turno :* ${existingUser.turno}\n*Email :* ${existingUser.email}\n*Imóvel Cod. :* ${existingUser.property}\n*Data :* ${existingUser.dataCad}\n*Agência :* Moinhos\n*Att :* Marketing`,
         "Id": uuidv4()
       };
 
