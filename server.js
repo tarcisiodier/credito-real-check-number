@@ -93,7 +93,7 @@ app.get('/remove-phone', async (req, res) => {
 
     // Atualiza isActive para false e isDuplicate para true
     user.isActive = 0;
-    user.isDuplicate = 1;
+    user.isDuplicate = 0;
     await user.save();
 
     // Enviar os dados do usuário para a API externa
@@ -124,28 +124,32 @@ app.get('/add-duplicate-phone', async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ where: { phone: phoneNumber } });
+    const users = await User.findAll({ where: { phone: phoneNumber } });
 
-    if (!user) {
+    if (users.length === 0) {
       return res.status(404).json({ error: 'Número de telefone não encontrado no banco de dados' });
     }
 
-    // Atualiza isActive para false e isDuplicate para true
-    user.isActive = 0;
-    user.isDuplicate = 1;
-    await user.save();
-    // Enviar os dados do usuário para a API externa
-    const userData = {    
-      "Phone": "555180405853",
-      "Body": `*>>> LEAD DUPLICADO! <<<*\n*Nome :* ${user.name}\n*Telefone :* ${user.phone}\n*Turno :* ${user.turno}\n*Email :* ${user.email}\n*Imóvel Cod. :* ${user.property}\n*Data :* ${user.dataCad}\n*Agência :* Moinhos`,
-      "Id": uuidv4()
-   }
+    // Atualiza isActive para false e isDuplicate para true para todos os registros encontrados
+    for (let user of users) {
+      user.isActive = 0;
+      user.isDuplicate = 1;
+      await user.save();
 
-  await axios.post(apiUrl, userData, { headers });
-    return res.json({ message: `${phoneNumber} já foi cadastrado no vista`, user });
+      // Enviar os dados do usuário para a API externa
+      const userData = {
+        "Phone": "555180405853",
+        "Body": `*>>> LEAD DUPLICADO! <<<*\n*Nome :* ${user.name}\n*Telefone :* ${user.phone}\n*Turno :* ${user.turno}\n*Email :* ${user.email}\n*Imóvel Cod. :* ${user.property}\n*Data :* ${user.dataCad}\n*Agência :* Moinhos`,
+        "Id": uuidv4()
+      };
+
+      await axios.post(apiUrl, userData, { headers });
+    }
+
+    return res.json({ message: `Todos os registros com o telefone ${phoneNumber} foram atualizados como duplicados e isActive ajustado para false.` });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Erro ao atualizar o usuário' });
+    return res.status(500).json({ error: 'Erro ao atualizar os usuários' });
   }
 });
 
